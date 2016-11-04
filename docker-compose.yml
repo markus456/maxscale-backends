@@ -1,0 +1,44 @@
+version: '2'
+services:
+    testing_master:
+        image: mariadb:latest
+        network_mode: "host"
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: Y
+        volumes:
+            - ./sql/master:/docker-entrypoint-initdb.d
+            - ./mysql:/var/lib/mysql/
+        command: mysqld --log-bin=binlog --binlog-format=ROW --server-id=3000 --port=3000 --log-slave-updates
+
+    testing_slave1:
+        image: mariadb:latest
+        network_mode: "host"
+        depends_on:
+            - testing_master
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: Y
+        volumes:
+            - ./sql/slave:/docker-entrypoint-initdb.d
+        command: mysqld --log-bin=binlog --binlog-format=ROW --server-id=3001 --port=3001 --log-slave-updates
+
+    testing_slave2:
+        image: mariadb:latest
+        network_mode: "host"
+        depends_on:
+            - testing_master
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: Y
+        volumes:
+            - ./sql/slave:/docker-entrypoint-initdb.d
+        command: mysqld --log-bin=binlog --binlog-format=ROW --server-id=3002 --port=3002 --log-slave-updates
+
+    testing_slave3:
+        image: mariadb:latest
+        network_mode: "host"
+        depends_on:
+            - testing_master
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: Y
+        volumes:
+            - ./sql/slave:/docker-entrypoint-initdb.d
+        command: mysqld --log-bin=binlog --binlog-format=ROW --server-id=3003 --port=3003 --log-slave-updates
